@@ -41,3 +41,5 @@ yarn-error.log*
 next-env.d.ts
 server/kokoro-v1.0.onnx
 server/voices-v1.0.bin
+server/
+.baileys-auth/
