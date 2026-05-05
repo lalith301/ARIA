@@ -40,8 +40,8 @@ export async function getCalendarEvents(query: string, userId?: string): Promise
 
     const formatted = events.map(event => {
       const start = event.start?.dateTime || event.start?.date || "";
-      const time = start ? new Date(start).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) : "All day";
-      const date = start ? new Date(start).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }) : "";
+      const time = start ? new Date(start).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" }) : "All day";
+      const date = start ? new Date(start).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "Asia/Kolkata" }) : "";
       return `• ${event.summary || "Untitled"} — ${date} at ${time}`;
     }).join("\n");
 
