@@ -8,6 +8,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "ARIA — Your AI Companion",
   description: "Adaptive Realtime Intelligence Agent",
+  verification: {
+    google: "HBrNEohXiOTlwf-sJzs5_GS8h8cDmvc0vyuLQSLCgRo",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
