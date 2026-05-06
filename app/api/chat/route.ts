@@ -98,7 +98,7 @@ Time awareness:
 
   // MCP tool results
   if (mcpResult) {
-    prompt += `\n\n━━ REAL-TIME DATA FROM TOOLS ━━\n${mcpResult}\n\nPresent this information naturally and conversationally. Don't just dump the data — weave it into your response like a helpful friend would.`;
+    prompt += `\n\n━━ REAL-TIME DATA FROM TOOLS ━━\n${mcpResult}\n\nCRITICAL: Present ONLY this exact data. Do NOT add anything from past memories. Do NOT mention other events, reminders, or items not in this data. This is the ONLY source of truth right now.`;
   }
 
   return prompt;

@@ -20,8 +20,9 @@ export function detectMCPIntent(message: string): MCPIntent {
 
   // ─── Calendar ────────────────────────────────────────────────────────────────
   if (
-    lower.match(/\b(calendar|schedule|meeting|appointment|event|reminder|upcoming|remind|what.s on|my day|today|tomorrow|this week)\b/) &&
-    !lower.includes("weather")
+    lower.match(/\b(calendar|schedule|meeting|appointment|event|reminder|upcoming|remind|what.s on|my day|this week)\b/) &&
+    !lower.includes("weather") &&
+    !lower.includes("news")
   ) {
     const isCreate = lower.match(/\b(add|create|schedule|set up|book|set a|set an|remind|reminder)\b/);
     return { tool: "calendar", query: message, action: isCreate ? "create" : "read" };
