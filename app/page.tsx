@@ -33,6 +33,7 @@ export default function Home() {
   const [sessionDuration, setSessionDuration] = useState(0);
   const [integrations, setIntegrations] = useState({ google: false, spotify: false });
   const [showIntegrations, setShowIntegrations] = useState(false);
+  const [spotifyConfirm, setSpotifyConfirm] = useState<string | null>(null);
 
   const sessionStartRef = useRef<number>(0);
   const lastActivityRef = useRef<number>(Date.now());
@@ -371,7 +372,7 @@ export default function Home() {
         )}
         {spotifyMatch && (
           <div style={{ marginTop: 10 }}>
-            <button onClick={() => { if (window.confirm("Open Spotify to play this?")) window.open(spotifyMatch[1], "_blank"); }}
+            <button onClick={() => setSpotifyConfirm(spotifyMatch[1])}
               style={{ background: "#1DB954", color: "#fff", border: "none", borderRadius: 8, padding: "7px 14px", fontSize: 11, cursor: "pointer", fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
               Open in Spotify
@@ -391,6 +392,26 @@ export default function Home() {
       <audio ref={audioRef} style={{ display: "none" }} crossOrigin="anonymous" />
       <div ref={canvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1 }} />
       <div style={{ position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none", background: "radial-gradient(ellipse at 40% 50%, transparent 35%, rgba(0,0,0,0.55) 100%)" }} />
+
+      {/* SPOTIFY CONFIRM POPUP — at root level so it's never blocked */}
+      {spotifyConfirm && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}>
+          <div style={{ background: "rgba(9,9,11,0.98)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 16, padding: "28px 32px", textAlign: "center", maxWidth: 300, animation: "luxFadeUp 0.2s ease" }}>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", marginBottom: 20 }}>Open this track in Spotify?</div>
+            <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
+              <a href={spotifyConfirm} target="_blank" rel="noopener noreferrer" onClick={() => setSpotifyConfirm(null)}
+                style={{ background: "#1DB954", color: "#fff", borderRadius: 8, padding: "9px 20px", fontSize: 12, textDecoration: "none", fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                Open Spotify
+              </a>
+              <button onClick={() => setSpotifyConfirm(null)}
+                style={{ background: "transparent", color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "9px 20px", fontSize: 12, cursor: "pointer" }}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* SESSION — WAITING */}
       {sessionState === "waiting" && (
