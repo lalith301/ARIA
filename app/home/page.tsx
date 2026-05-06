@@ -86,7 +86,7 @@ export default function Landing() {
         {/* Title */}
         <h1 style={{ position: "relative", fontSize: "clamp(80px, 18vw, 160px)", fontWeight: 100, letterSpacing: 32, margin: "0 0 16px", lineHeight: 1, background: "linear-gradient(135deg, #ffffff 0%, #c8a8ff 40%, #ffffff 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>ARIA</h1>
 
-        <p style={{ position: "relative", fontSize: 10, color: "rgba(180,150,255,0.45)", letterSpacing: 7, marginBottom: 52, fontFamily: "monospace" }}>ADAPTIVE REALTIME INTELLIGENCE AGENT</p>
+        <p style={{ position: "relative", fontSize: 12, color: "rgba(180,150,255,0.45)", letterSpacing: 7, marginBottom: 52, fontFamily: "monospace" }}>ADAPTIVE REALTIME INTELLIGENCE AGENT</p>
 
         {/* Tagline */}
         <p style={{ position: "relative", fontSize: "clamp(18px, 2.5vw, 24px)", color: "rgba(255,255,255,0.6)", maxWidth: 540, lineHeight: 1.85, marginBottom: 68, fontWeight: 300 }}>
