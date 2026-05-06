@@ -142,7 +142,7 @@ export async function POST(req: NextRequest) {
 
   const [relevantMemories, recentHistory, profile] = await Promise.all([
     isCalendarAction ? Promise.resolve([]) : getRelevantMemories(USER_ID, latestMessage),
-    getRecentHistory(USER_ID, 8),
+    isCalendarAction ? Promise.resolve([]) : getRecentHistory(USER_ID, 8),
     getUserProfile(USER_ID),
   ]);
   
