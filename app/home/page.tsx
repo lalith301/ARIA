@@ -106,7 +106,7 @@ export default function Landing() {
 
       {/* Features */}
       <div style={{ padding: "100px 56px", maxWidth: 1140, margin: "0 auto" }}>
-        <p style={{ fontSize: 10, color: "rgba(150,100,255,0.5)", letterSpacing: 5, fontFamily: "monospace", marginBottom: 52, textAlign: "center" }}>WHAT ARIA CAN DO</p>
+        <p style={{ fontSize: 14, color: "rgba(150,100,255,0.5)", letterSpacing: 5, fontFamily: "monospace", marginBottom: 52, textAlign: "center" }}>WHAT ARIA CAN DO</p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1px", background: "rgba(150,100,255,0.12)", borderRadius: 20, overflow: "hidden" }}>
           {[
             { num: "01", title: "Remembers You", desc: "Tracks preferences, mood patterns, and conversations across every session" },
