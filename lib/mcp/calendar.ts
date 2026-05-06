@@ -91,8 +91,8 @@ export async function createCalendarEvent(title: string, date: string, time: str
       calendarId: "primary",
       requestBody: {
         summary: title,
-        start: { dateTime: startDate.toISOString() },
-        end: { dateTime: endDate.toISOString() },
+        start: { dateTime: startDate.toISOString(), timeZone: "Asia/Kolkata" },
+        end: { dateTime: endDate.toISOString() , timeZone: "Asia/Kolkata"},
       },
     });
 
