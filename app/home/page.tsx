@@ -9,7 +9,7 @@ export default function Landing() {
   
         {/* Nav */}
         <nav style={{ position: "fixed", top: 0, left: 0, right: 0, padding: "22px 52px", display: "flex", justifyContent: "space-between", alignItems: "center", zIndex: 10 }}>
-          <span style={{ fontSize: 12, letterSpacing: 7, fontFamily: "monospace", color: "rgba(255,255,255,0.5)" }}>ARIA</span>
+          <span style={{ fontSize: 13, letterSpacing: 7, fontFamily: "monospace", color: "rgba(255,255,255,0.5)" }}>ARIA</span>
           <a href="/privacy" style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", textDecoration: "none", letterSpacing: 1 }}>Privacy</a>
         </nav>
   
@@ -83,8 +83,8 @@ export default function Landing() {
               { num: "06", title: "Mood Aware", desc: "Detects how you're feeling and adapts its tone to match your energy" },
             ].map((f, i) => (
               <div key={i} style={{ padding: "36px 32px", background: "#080810" }}>
-                <div style={{ fontSize: 10, color: "rgba(150,100,255,0.4)", fontFamily: "monospace", letterSpacing: 2, marginBottom: 16 }}>{f.num}</div>
-                <div style={{ fontSize: 14, fontWeight: 400, color: "rgba(255,255,255,0.75)", marginBottom: 10, letterSpacing: 0.3 }}>{f.title}</div>
+                <div style={{ fontSize: 12, color: "rgba(150,100,255,0.4)", fontFamily: "monospace", letterSpacing: 2, marginBottom: 16 }}>{f.num}</div>
+                <div style={{ fontSize: 15, fontWeight: 400, color: "rgba(255,255,255,0.75)", marginBottom: 10, letterSpacing: 0.3 }}>{f.title}</div>
                 <div style={{ fontSize: 13, color: "rgba(255,255,255,0.35)", lineHeight: 1.75 }}>{f.desc}</div>
               </div>
             ))}
