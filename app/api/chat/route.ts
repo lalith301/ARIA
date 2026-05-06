@@ -136,8 +136,10 @@ export async function POST(req: NextRequest) {
 
   
 
+  const isCalendarAction = latestMessage.toLowerCase().match(/\b(reminder|event|meeting|appointment|schedule|calendar)\b/);
+
   const [relevantMemories, recentHistory, profile] = await Promise.all([
-    getRelevantMemories(USER_ID, latestMessage),
+    isCalendarAction ? Promise.resolve([]) : getRelevantMemories(USER_ID, latestMessage),
     getRecentHistory(USER_ID, 8),
     getUserProfile(USER_ID),
   ]);

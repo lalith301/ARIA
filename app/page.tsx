@@ -138,7 +138,7 @@ export default function Home() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data: profile } = await supabase.from("user_profiles").select("last_active, facts").eq("user_id", user.id).single();
+        const { data: profile } = await supabase.from("user_profiles").select("last_active, facts").eq("user_id", user.id).maybeSingle();
         const lastActive = profile?.last_active ? new Date(profile.last_active) : null;
         const minutesSince = lastActive ? Math.floor((Date.now() - lastActive.getTime()) / 60000) : null;
         const name = profile?.facts?.find((f: string) => f.startsWith("User's name"))?.split("is ")?.[1] || "";
