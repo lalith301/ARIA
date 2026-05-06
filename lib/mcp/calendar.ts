@@ -80,7 +80,10 @@ export async function createCalendarEvent(title: string, date: string, time: str
 
     // Build datetime string in user's local timezone
     const year = new Date().getFullYear();
-    const dateTimeStr = `${cleanDate} ${year} ${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`;
+    // If date is already ISO format (2026-05-07), don't append year
+    const dateTimeStr = date.match(/^\d{4}-\d{2}-\d{2}$/)
+    ? `${date} ${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`
+    : `${cleanDate} ${year} ${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`;
 
     console.log("📅 dateTimeStr:", dateTimeStr, "| timezone:", timezone);
 
