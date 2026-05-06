@@ -111,7 +111,8 @@ export async function getSpotifyRecommendations(mood: string, userId?: string): 
 
     const formatted = tracks.map(t => `• ${t.name} — ${t.artists[0].name}`).join("\n");
     const topTrack = tracks[0];
-    const webUrl = `https://open.spotify.com/search/${encodeURIComponent(topTrack.name + " " + topTrack.artists[0].name)}`;
+    const spotifyUri = `spotify:search:${encodeURIComponent(topTrack.name + " " + topTrack.artists[0].name)}`;
+    const webUrl = spotifyUri;
     return `Based on your mood, you might enjoy:\n${formatted}\n[SPOTIFY_OPEN:${webUrl}]`;
   } catch (err: any) {
     console.error("Spotify recommendations error:", err.message);
