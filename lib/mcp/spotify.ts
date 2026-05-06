@@ -77,10 +77,13 @@ export async function searchSpotify(query: string, userId?: string): Promise<str
     const lower = query.toLowerCase();
     let searchQuery = query;
 
-    for (const [mood, moodQuery] of Object.entries(MOOD_QUERIES)) {
-      if (lower.includes(mood)) {
-        searchQuery = moodQuery;
-        break;
+    const hasLanguageOrGenre = lower.match(/\b(telugu|tamil|hindi|kannada|malayalam|punjabi|english|spanish|korean|pop|rock|jazz|classical|instrumental)\b/);
+    if (!hasLanguageOrGenre) {
+      for (const [mood, moodQuery] of Object.entries(MOOD_QUERIES)) {
+        if (lower.includes(mood)) {
+          searchQuery = moodQuery;
+          break;
+        }
       }
     }
 

@@ -66,7 +66,9 @@ export async function runMCP(message: string, userMood?: string, userId?: string
 
       case "spotify": {
         let result: string;
-        if (userMood && userMood !== "neutral") {
+        // Check if user asked for specific genre/language — always search directly
+        const hasSpecificRequest = message.toLowerCase().match(/\b(telugu|tamil|hindi|kannada|malayalam|punjabi|song|songs|track|artist|album|playlist)\b/);
+        if (!hasSpecificRequest && userMood && userMood !== "neutral") {
           result = await getSpotifyRecommendations(userMood, userId);
         } else {
           result = await searchSpotify(message, userId);
