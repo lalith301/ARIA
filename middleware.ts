@@ -42,9 +42,9 @@ export async function middleware(request: NextRequest) {
 
   // If logged in and on login page, redirect to home
   // Logged in + on login page → go to app
-  if (user && request.nextUrl.pathname.startsWith("/login")) {
+  if (!user && !request.nextUrl.pathname.startsWith("/login") && !request.nextUrl.pathname.startsWith("/auth") && !request.nextUrl.pathname.startsWith("/home") && !request.nextUrl.pathname.startsWith("/privacy")) {
     const url = request.nextUrl.clone();
-    url.pathname = "/";
+    url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
