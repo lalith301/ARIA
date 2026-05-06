@@ -41,9 +41,17 @@ export async function middleware(request: NextRequest) {
   }
 
   // If logged in and on login page, redirect to home
+  // Logged in + on login page → go to app
   if (user && request.nextUrl.pathname.startsWith("/login")) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
+
+  // Logged out + on root → go to home landing page
+  if (!user && request.nextUrl.pathname === "/") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/home";
     return NextResponse.redirect(url);
   }
 
