@@ -35,16 +35,20 @@ async function ensureToken(userId?: string): Promise<void> {
         const isExpired = data.expires_at && new Date(data.expires_at) < new Date();
         if (!isExpired) {
           const api = getSpotifyClient();
-          api.setAccessToken(data.access_token);
-          return;
+          const data = await api.clientCredentialsGrant();
+          api.setAccessToken(data.body.access_token);
+          tokenExpiry = Date.now() + (data.body.expires_in - 60) * 1000;
+          console.log("✅ Spotify client credentials refreshed");
         }
       }
-    } catch {}
+    } catch (tokenErr: any){
+      console.error("Spotify token error:", JSON.stringify(tokenErr, Object.getOwnPropertyNames(tokenErr)));
+      throw tokenErr;
+    }
   }
 
   // Always refresh client credentials
-  // Refresh client credentials only if expired
-  if (Date.now() < tokenExpiry) return;
+  tokenExpiry = 0;
   const api = getSpotifyClient();
   const data = await api.clientCredentialsGrant();
   api.setAccessToken(data.body.access_token);
@@ -96,7 +100,9 @@ export async function searchSpotify(query: string, userId?: string): Promise<str
 
     return `Found on Spotify:\n${formatted}\n\n[SPOTIFY_OPEN:${webUrl}][SPOTIFY_URI:${trackUri}]`;
   } catch (err: any) {
-    console.error("Spotify search error:", err.message);
+    console.error("Spotify search error full:", JSON.stringify(err, Object.getOwnPropertyNames(err)));
+    console.error("Spotify error message:", err?.message);
+    console.error("Spotify error status:", err?.statusCode);
     return "Could not search Spotify.";
   }
 }
