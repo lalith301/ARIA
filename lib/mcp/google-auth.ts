@@ -23,12 +23,28 @@ export async function getGoogleAuth(userId?: string) {
         .eq("provider", "google")
         .single();
 
-      if (data?.refresh_token) {
-        oauth2Client.setCredentials({
-          access_token: data.access_token,
-          refresh_token: data.refresh_token,
-          expiry_date: data.expires_at ? new Date(data.expires_at).getTime() : undefined,
-        });
+        if (data?.refresh_token) {
+          oauth2Client.setCredentials({
+            access_token: data.access_token,
+            refresh_token: data.refresh_token,
+            expiry_date: data.expires_at ? new Date(data.expires_at).getTime() : undefined,
+          });
+        
+          // Force refresh if token is expired
+          const isExpired = data.expires_at && new Date(data.expires_at) < new Date();
+          if (isExpired) {
+            console.log("🔄 Google token expired, refreshing...");
+            const { credentials } = await oauth2Client.refreshAccessToken();
+            // Save new token to Supabase
+            await supabase.from("user_integrations").upsert({
+              user_id: userId,
+              provider: "google",
+              access_token: credentials.access_token,
+              refresh_token: credentials.refresh_token || data.refresh_token,
+              expires_at: credentials.expiry_date ? new Date(credentials.expiry_date).toISOString() : null,
+              updated_at: new Date().toISOString(),
+            }, { onConflict: "user_id,provider" });
+          }
 
         // Auto-refresh and save new token if expired
         oauth2Client.on("tokens", async (tokens) => {
