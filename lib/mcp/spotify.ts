@@ -43,7 +43,8 @@ async function ensureToken(userId?: string): Promise<void> {
   }
 
   // Always refresh client credentials
-  tokenExpiry = 0;
+  // Refresh client credentials only if expired
+  if (Date.now() < tokenExpiry) return;
   const api = getSpotifyClient();
   const data = await api.clientCredentialsGrant();
   api.setAccessToken(data.body.access_token);
@@ -150,8 +151,8 @@ export async function getSpotifyRecommendations(mood: string, userId?: string): 
     const webUrl = `https://open.spotify.com/search/${encodeURIComponent(topTrack.name + " " + topTrack.artists[0].name)}`;
     return `Based on your mood, you might enjoy:\n${formatted}\n[SPOTIFY_OPEN:${webUrl}][SPOTIFY_URI:${trackUri}]`;
   } catch (err: any) {
-    console.error("Spotify recommendations error:", err.message);
-    return "Could not get Spotify recommendations.";
+    console.error("Spotify search error:", JSON.stringify(err));
+    return "Could not search Spotify.";
   }
 }
 
