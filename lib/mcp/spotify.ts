@@ -42,7 +42,7 @@ async function ensureToken(userId?: string): Promise<void> {
     } catch {}
   }
 
-  // Always refresh client credentials — reset expiry to force refresh
+  // Always refresh client credentials
   tokenExpiry = 0;
   const api = getSpotifyClient();
   const data = await api.clientCredentialsGrant();
@@ -69,7 +69,6 @@ export async function searchSpotify(query: string, userId?: string): Promise<str
     await ensureToken(userId);
     const api = getSpotifyClient();
 
-    // Detect mood from query
     const lower = query.toLowerCase();
     let searchQuery = query;
 
@@ -80,7 +79,6 @@ export async function searchSpotify(query: string, userId?: string): Promise<str
       }
     }
 
-    // Search for tracks
     const result = await api.searchTracks(searchQuery, { limit: 5 });
     const tracks = result.body.tracks?.items || [];
 
@@ -92,12 +90,46 @@ export async function searchSpotify(query: string, userId?: string): Promise<str
     }).join("\n");
 
     const topTrack = tracks[0];
+    const trackUri = topTrack.uri; // spotify:track:XXXX
     const webUrl = `https://open.spotify.com/search/${encodeURIComponent(topTrack.name)}`;
 
-    return `Found on Spotify:\n${formatted}\n\n[SPOTIFY_OPEN:${webUrl}]`;
+    return `Found on Spotify:\n${formatted}\n\n[SPOTIFY_OPEN:${webUrl}][SPOTIFY_URI:${trackUri}]`;
   } catch (err: any) {
     console.error("Spotify search error:", err.message);
     return "Could not search Spotify.";
+  }
+}
+
+export async function playSpotifyTrack(trackUri: string, userId?: string): Promise<string> {
+  try {
+    if (!userId) return "Connect Spotify in the apps panel to enable playback.";
+
+    const { data } = await supabase
+      .from("user_integrations")
+      .select("access_token")
+      .eq("user_id", userId)
+      .eq("provider", "spotify")
+      .single();
+
+    if (!data?.access_token) return "Connect Spotify in the apps panel to enable playback.";
+
+    const res = await fetch("https://api.spotify.com/v1/me/player/play", {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${data.access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ uris: [trackUri] }),
+    });
+
+    if (res.status === 204) return "▶️ Now playing on Spotify!";
+    if (res.status === 403) return "Spotify Premium is required for playback control.";
+    if (res.status === 404) return "No active Spotify device found — open Spotify on any device first, then ask me to play.";
+    if (res.status === 401) return "Spotify session expired — reconnect Spotify in the apps panel.";
+    return "Could not play track.";
+  } catch (err: any) {
+    console.error("Spotify play error:", err.message);
+    return "Could not control Spotify playback.";
   }
 }
 
@@ -114,9 +146,9 @@ export async function getSpotifyRecommendations(mood: string, userId?: string): 
 
     const formatted = tracks.map(t => `• ${t.name} — ${t.artists[0].name}`).join("\n");
     const topTrack = tracks[0];
-    const spotifyUri = `spotify:search:${encodeURIComponent(topTrack.name + " " + topTrack.artists[0].name)}`;
-    const webUrl = spotifyUri;
-    return `Based on your mood, you might enjoy:\n${formatted}\n[SPOTIFY_OPEN:${webUrl}]`;
+    const trackUri = topTrack.uri;
+    const webUrl = `https://open.spotify.com/search/${encodeURIComponent(topTrack.name + " " + topTrack.artists[0].name)}`;
+    return `Based on your mood, you might enjoy:\n${formatted}\n[SPOTIFY_OPEN:${webUrl}][SPOTIFY_URI:${trackUri}]`;
   } catch (err: any) {
     console.error("Spotify recommendations error:", err.message);
     return "Could not get Spotify recommendations.";

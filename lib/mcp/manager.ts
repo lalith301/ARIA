@@ -2,7 +2,7 @@ import { detectMCPIntent, MCPIntent } from "./intent";
 import { getCalendarEvents, createCalendarEvent } from "./calendar";
 import { getEmails, sendEmail } from "./gmail";
 import { searchDrive } from "./drive";
-import { searchSpotify, getSpotifyRecommendations } from "./spotify";
+import { searchSpotify, getSpotifyRecommendations, playSpotifyTrack } from "./spotify";
 import { getGitHubInfo } from "./github";
 import { initWhatsApp, getWhatsAppMessages, sendWhatsAppMessage, isWhatsAppConnected } from "./whatsapp";
 import { searchWeb, getWeather } from "../tools";
@@ -65,10 +65,23 @@ export async function runMCP(message: string, userMood?: string, userId?: string
       }
 
       case "spotify": {
+        let result: string;
         if (userMood && userMood !== "neutral") {
-          return await getSpotifyRecommendations(userMood, userId);
+          result = await getSpotifyRecommendations(userMood, userId);
+        } else {
+          result = await searchSpotify(message, userId);
         }
-        return await searchSpotify(message, userId);
+
+        // Try autoplay if user has Spotify connected
+        const uriMatch = result.match(/\[SPOTIFY_URI:(spotify:track:[^\]]+)\]/);
+        if (uriMatch && userId) {
+          const playResult = await playSpotifyTrack(uriMatch[1], userId);
+          console.log("🎵 Autoplay:", playResult);
+          // Append play result to response
+          result = result.replace(/\[SPOTIFY_URI:[^\]]+\]/g, "") + `\n${playResult}`;
+        }
+
+        return result;
       }
 
       case "github": {
