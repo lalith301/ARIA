@@ -20,7 +20,7 @@ export function detectMCPIntent(message: string): MCPIntent {
 
   // ─── Calendar ────────────────────────────────────────────────────────────────
   if (
-    lower.match(/\b(calendar|schedule|meeting|appointment|event|reminder|remind|what.s on|my day|today|tomorrow|this week)\b/) &&
+    lower.match(/\b(calendar|schedule|meeting|appointment|event|reminder|upcoming|remind|what.s on|my day|today|tomorrow|this week)\b/) &&
     !lower.includes("weather")
   ) {
     const isCreate = lower.match(/\b(add|create|schedule|set up|book|set a|set an|remind|reminder)\b/);
@@ -28,13 +28,13 @@ export function detectMCPIntent(message: string): MCPIntent {
   }
 
   // ─── Gmail ───────────────────────────────────────────────────────────────────
-  if (lower.match(/\b(email|mail|inbox|unread|message from|reply to|send.*email|check.*mail)\b/)) {
+  if (lower.match(/\b(email|gmail|inbox|mail|unread|message|send.*email|emails|mails|messages)\b/)){
     const isSend = lower.match(/\b(send|reply|write|draft|compose)\b/);
     return { tool: "gmail", query: message, action: isSend ? "send" : "read" };
   }
 
   // ─── Google Drive ────────────────────────────────────────────────────────────
-  if (lower.match(/\b(drive|document|doc|file|spreadsheet|find.*file|my files)\b/)) {
+  if (lower.match(/\b(drive|file|document|doc|folder|spreadsheet|presentation|files|documents|docs|google drive|my drive)\b/)){
     return { tool: "drive", query: message, action: "search" };
   }
 

@@ -53,6 +53,7 @@ export async function getDriveFile(fileId: string, userId?: string): Promise<str
   try {
     const auth = await getGoogleAuth(userId);
     const drive = google.drive({ version: "v3", auth });
+    console.log("🔍 Drive userId:", userId || "NONE — using default");
 
     const response = await drive.files.get({
       fileId,
