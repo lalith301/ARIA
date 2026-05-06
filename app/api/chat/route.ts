@@ -123,7 +123,8 @@ export async function POST(req: NextRequest) {
   if (!user) return new Response("Unauthorized", { status: 401 });
 
   const USER_ID = user.id;
-  const { messages } = await req.json();
+  const { messages, timezone } = await req.json();
+  const userTimezone = timezone || "Asia/Kolkata";
   const latestMessage = messages[messages.length - 1]?.content || "";
 
   const currentMood = detectMood(latestMessage);
@@ -131,7 +132,7 @@ export async function POST(req: NextRequest) {
 
   // Run everything in parallel
   // Run MCP first separately so we can short-circuit for WhatsApp QR
-  const mcpResult = await runMCP(latestMessage, currentMood, USER_ID);
+  const mcpResult = await runMCP(latestMessage, currentMood, USER_ID, userTimezone);
 
   
 

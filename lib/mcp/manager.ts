@@ -7,7 +7,7 @@ import { getGitHubInfo } from "./github";
 import { initWhatsApp, getWhatsAppMessages, sendWhatsAppMessage, isWhatsAppConnected } from "./whatsapp";
 import { searchWeb, getWeather } from "../tools";
 
-export async function runMCP(message: string, userMood?: string, userId?: string): Promise<string | null> {
+export async function runMCP(message: string, userMood?: string, userId?: string, timezone?: string): Promise<string | null> {
   const intent: MCPIntent = detectMCPIntent(message);
   console.log("🔍 MCP Intent:", intent.tool, "| Action:", intent.action, "| Message:", message.slice(0, 50));
 
@@ -19,7 +19,8 @@ export async function runMCP(message: string, userMood?: string, userId?: string
       case "calendar": {
         if (intent.action === "create") {
           const calledMatch = message.match(/(?:called|named|saying|titled)\s+["']?([^"']+?)["']?\s*(?:for|on|at|$)/i);
-          const title = calledMatch?.[1]?.trim() || "Event";
+          const reminderMatch = message.match(/(?:reminder|event|meeting)\s+["']?([A-Za-z0-9_\-]+)["']?\s*(?:for|on|at|tomorrow|today|\d)/i);
+          const title = calledMatch?.[1]?.trim() || reminderMatch?.[1]?.trim() || "Event";
 
           const dateMatch = message.match(/(\d{1,2}(?:st|nd|rd|th)?\s+(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*|(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\s+\d{1,2}(?:st|nd|rd|th)?|\d{4}-\d{2}-\d{2}|today|tomorrow)/i);
           const timeMatch = message.match(/(\d{1,2}(?::\d{2})?\s*(?:am|pm))/i);
@@ -41,9 +42,9 @@ export async function runMCP(message: string, userMood?: string, userId?: string
 
           const time = timeMatch[1];
           console.log("📋 Extracted:", { title, date, time });
-          return await createCalendarEvent(title, date, time, 60, userId);
+          return await createCalendarEvent(title, date, time, 60, userId, timezone);
         }
-        return await getCalendarEvents(message, userId);
+        return await getCalendarEvents(message, userId, timezone);
       }
 
       case "gmail": {

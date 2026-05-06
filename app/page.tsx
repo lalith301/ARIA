@@ -325,7 +325,7 @@ export default function Home() {
     setMessages(history); setInput(""); setLoading(true); setAriaState("thinking");
     setMessages([...history, { role: "assistant", content: "" }]);
     try {
-      const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: history }) });
+      const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: history, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone }) });
       if (res.status === 401) { window.location.href = "/login"; return; }
       const reader = res.body!.getReader(); const decoder = new TextDecoder(); let full = "";
       while (true) { const { done, value } = await reader.read(); if (done) break; full += decoder.decode(value); setMessages([...history, { role: "assistant", content: full }]); }
