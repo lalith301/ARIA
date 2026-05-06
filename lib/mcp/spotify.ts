@@ -32,15 +32,18 @@ async function ensureToken(userId?: string): Promise<void> {
         .single();
 
       if (data?.access_token) {
-        const api = getSpotifyClient();
-        api.setAccessToken(data.access_token);
-        return;
+        const isExpired = data.expires_at && new Date(data.expires_at) < new Date();
+        if (!isExpired) {
+          const api = getSpotifyClient();
+          api.setAccessToken(data.access_token);
+          return;
+        }
       }
     } catch {}
   }
 
-  // Fallback to client credentials
-  if (Date.now() < tokenExpiry) return;
+  // Always refresh client credentials — reset expiry to force refresh
+  tokenExpiry = 0;
   const api = getSpotifyClient();
   const data = await api.clientCredentialsGrant();
   api.setAccessToken(data.body.access_token);
