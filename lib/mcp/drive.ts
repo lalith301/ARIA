@@ -9,10 +9,13 @@ export async function searchDrive(query: string, userId?: string): Promise<strin
 
     // Extract search term from query
     const searchTerm = query
-      .toLowerCase()
-      .replace(/\b(find|search|look|for|get|my|files|document|docs|in|drive|google|fetch|recent|latest|from|the|show|list|all)\b/g, "")
-      .replace(/\s+/g, " ")
-      .trim();
+    .toLowerCase()
+    .replace(/\b(what|are|there|is|find|search|look|for|get|my|files|file|document|docs|in|drive|google|fetch|recent|latest|from|the|show|list|all|any|have|i)\b/g, "")
+    .replace(/[?!.,]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+    console.log("🔍 Drive userId:", userId || "NONE — using default");
 
     console.log("🔍 Drive searchTerm after cleaning:", `"${searchTerm}"`);
 
